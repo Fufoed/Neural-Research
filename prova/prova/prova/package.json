@@ -1,0 +1,13 @@
+{
+  "name": "prova",
+  "version": "0.0.0",
+  "description": "prova",
+  "main": "app.js",
+  "author": {
+    "name": "samue"
+  },
+  "dependencies": {
+    "math": "0.0.3",
+    "matlab": "^1.0.0"
+  }
+}
