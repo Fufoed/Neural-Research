@@ -1,16 +1,13 @@
 var math = require('mathjs');
 
-var Neuron = function() {
+var Neuron = function(MaxWeights) {
     //this.value = 0;
-    this.weights = [];
-    this.bias = Math.random() * 2 - 1;
-    //this.adjust = 0;
-}
-Neuron.prototype.Populate = function(MaxWeights) {
     this.weights = [];
     for (let i = 0; i < MaxWeights; i++) {
         this.weights.push(Math.random() * 2 - 1);
     }
+    this.bias = Math.random() * 2 - 1;
+    //this.adjust = 0;
 }
 Neuron.prototype.Process = function(inputs) {
     this.lastInputs = inputs;
@@ -22,18 +19,13 @@ Neuron.prototype.Process = function(inputs) {
 
 
 
-var Layer = function(index) {
-    this.id = index || 0;
-    this.neurons = [];
-}
-Layer.prototype.Populate = function(MaxNeurons, MaxInputs) {
+var Layer = function(MaxNeurons, MaxInputs) {
     this.neurons = [];
     for (let i = 0; i < MaxNeurons; i++) {
-        var neuron = new Neuron();
-        neuron.Populate(MaxInputs);
-        this.neurons.push(neuron);
+        this.neurons[i] = new Neuron(MaxInputs);
     }
 }
+
 Layer.prototype.Process = function(inputs) {
     return this.neurons.map(function(neuron) {
         return neuron.Process(inputs);
@@ -44,29 +36,6 @@ Layer.prototype.Process = function(inputs) {
 
 var Network = function() {
     this.network = [];
-}
-Network.prototype.InitializeNetwork = function(input, hiddens, output) {
-    index = 0;
-    prevNeurons = 0;
-    var head = new Layer(index);
-    head.Populate(input, prevNeurons);
-    this.network.push(head);
-    prevNeurons = input;
-    index++;
-
-    for (let i in hiddens) {
-        var body = new Layer(index);
-        body.Populate(hiddens[i], prevNeurons);
-        this.network.push(body);
-        prevNeurons = hiddens[i];
-        index++;
-    }
-
-    var tail = new Layer(index);
-    tail.Populate(output, prevNeurons)
-    this.network.push(tail)
-
-    return this.network;
 }
 Network.prototype.Process = function(inputs) {
     var outputs;
@@ -81,8 +50,7 @@ Network.prototype.AddLayer = function(MaxNeurons, MaxInputs) {
         var prevLayer = this.network[this.network.length - 1];
         MaxInputs = prevLayer.neurons.length;
     }
-    var layer = new Layer(index);
-    layer.Populate(MaxNeurons, MaxInputs);
+    var layer = new Layer(MaxNeurons, MaxInputs);
     this.network.push(layer);
 }
 Network.prototype.Train = function(examples) {
@@ -273,3 +241,8 @@ Functions.prototype.Mse = function(errors) {
             var prediction = new Functions().Predict(network, dataset[row]);
             console.log("Expected: " + dataset[row][dataset[row].length - 1] + "     predicted: " + prediction);
         }*/
+net = new Network();
+net.network.push(new Layer(3, 50));
+net.network.push(new Layer(3, 50));
+net.network.push(new Layer(3, 50));
+net.AddLayer(3, 50);
