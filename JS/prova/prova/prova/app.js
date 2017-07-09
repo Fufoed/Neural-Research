@@ -12,7 +12,9 @@ var Neuron = function(MaxWeights) {
 Neuron.prototype.Process = function(inputs) {
     this.lastInputs = inputs;
     var sum = 0;
-    sum = new Functions().Activation(this.weights, inputs);
+    for (let i = 0; i < inputs.length; i++) {
+        sum += inputs[i] * this.weights[i];
+    }
     sum += this.bias;
     return this.lastOutputs = new Functions().Sigmoid(sum);
 }
@@ -43,6 +45,7 @@ Network.prototype.Process = function(inputs) {
         outputs = layer.Process(inputs);
         inputs = outputs;
     })
+    return outputs;
 }
 Network.prototype.AddLayer = function(MaxNeurons, MaxInputs) {
     var index = 0;
@@ -94,11 +97,11 @@ Network.prototype.Train = function(examples) {
         }));
 
         if (i % 10000 == 0) {
-            console.log("Iteration : ", itr, " error : ", error);
+            console.log("Iteration : ", i, " error : ", error);
         }
 
         if (error < Threshold) {
-            console.log("Stopped at iteration n°", itr);
+            console.log("Stopped at iteration n°", i);
             return;
         }
     }
@@ -217,32 +220,158 @@ Functions.prototype.Predict = function(network, row) {
     return outputs.indexOf(Math.max(outputs));
 }
 Functions.prototype.Mse = function(errors) {
-        var sum = errors.reduce(function(sum, i) {
-            return sum + i * i;
-        }, 0);
-        return sum / errors.length;
-    }
+    var sum = errors.reduce(function(sum, i) {
+        return sum + i * i;
+    }, 0);
+    return sum / errors.length;
+}
+
+var dataset = [
+        [2.7810836, 2.550537003, 0],
+        [1.465489372, 2.362125076, 0],
+        [3.396561688, 4.400293529, 0],
+        [1.38807019, 1.850220317, 0],
+        [3.06407232, 3.005305973, 0],
+        [7.627531214, 2.759262235, 1],
+        [5.332441248, 2.088626775, 1],
+        [6.922596716, 1.77106367, 1],
+        [8.675418651, -0.242068655, 1],
+        [7.673756466, 3.508563011, 1]
+    ]
     /*
-        var dataset = [
-            [2.7810836, 2.550537003, 0],
-            [1.465489372, 2.362125076, 0],
-            [3.396561688, 4.400293529, 0],
-            [1.38807019, 1.850220317, 0],
-            [3.06407232, 3.005305973, 0],
-            [7.627531214, 2.759262235, 1],
-            [5.332441248, 2.088626775, 1],
-            [6.922596716, 1.77106367, 1],
-            [8.675418651, -0.242068655, 1],
-            [7.673756466, 3.508563011, 1]
-        ]
-        var network = new Network().InitializeNetwork(5, [5], 5);
-        new Network().Train(network, dataset, 0.5, 1, 5);
-        /*for (let row = 0; row < dataset.length; row++) {
-            var prediction = new Functions().Predict(network, dataset[row]);
-            console.log("Expected: " + dataset[row][dataset[row].length - 1] + "     predicted: " + prediction);
-        }*/
+    var network = new Network().InitializeNetwork(5, [5], 5);
+    new Network().Train(network, dataset, 0.5, 1, 5);
+    /*for (let row = 0; row < dataset.length; row++) {
+        var prediction = new Functions().Predict(network, dataset[row]);
+        console.log("Expected: " + dataset[row][dataset[row].length - 1] + "     predicted: " + prediction);
+    }*/
 net = new Network();
-net.network.push(new Layer(3, 50));
-net.network.push(new Layer(3, 50));
-net.network.push(new Layer(3, 50));
-net.AddLayer(3, 50);
+net.AddLayer(10, 20);
+net.AddLayer(2);
+var zero = [
+    0, 1, 1, 0,
+    1, 0, 0, 1,
+    1, 0, 0, 1,
+    1, 0, 0, 1,
+    0, 1, 1, 0
+]
+
+var one = [
+    0, 0, 1, 0,
+    0, 0, 1, 0,
+    0, 0, 1, 0,
+    0, 0, 1, 0,
+    0, 0, 1, 0
+]
+
+var two = [
+    0, 1, 1, 0,
+    1, 0, 0, 1,
+    0, 0, 1, 0,
+    0, 1, 0, 0,
+    1, 1, 1, 1
+]
+
+var three = [
+    1, 1, 1, 1,
+    0, 0, 0, 1,
+    0, 1, 1, 1,
+    0, 0, 0, 1,
+    1, 1, 1, 1
+]
+var three_one = [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1];
+
+var three_two = [0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1];
+
+var three_three = [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1];
+
+
+
+var two_one = [1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1];
+
+var two_two = [1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1];
+
+var two_three = [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1];
+
+
+
+var one_one = [0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1];
+
+var one_two = [0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0];
+
+var one_three = [0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1];
+
+
+
+var zero_one = [0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0];
+
+var zero_two = [0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1];
+
+var zero_three = [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0];
+
+net.Train([
+    [zero, [0, 0]],
+
+    [one, [0, 1]],
+
+    [two, [1, 0]],
+
+    [three, [1, 1]],
+
+    [one_one, [0, 1]],
+
+    [one_two, [0, 1]],
+
+    [one_three, [0, 1]],
+
+    [two_one, [1, 0]],
+
+    [two_two, [1, 0]],
+
+    [two_three, [1, 0]],
+
+    [three_one, [1, 1]],
+
+    [three_two, [1, 1]],
+
+    [three_three, [1, 1]],
+
+    [zero_one, [0, 0]],
+
+    [zero_two, [0, 0]],
+
+    [zero_three, [0, 0]]
+
+])
+
+var outputs = net.Process(two)
+
+var binary = outputs.map(function(v) { return Math.round(v) }).join("")
+
+var decimal = parseInt(binary, 2)
+
+console.log("Digit recognized : ", decimal, outputs)
+
+
+
+var outputs = net.Process(three)
+
+var binary = outputs.map(function(v) { return Math.round(v) }).join("")
+
+var decimal = parseInt(binary, 2)
+
+console.log("Digit recognized :", decimal, outputs)
+
+
+
+var outputs = net.Process(one)
+
+var binary = outputs.map(function(v) { return Math.round(v) }).join("")
+
+var decimal = parseInt(binary, 2)
+
+console.log("Digit recognized :", decimal, outputs)
+
+
+
+console.log(net.Serialize());
