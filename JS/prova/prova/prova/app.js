@@ -57,7 +57,7 @@ Network.prototype.AddLayer = function(MaxNeurons, MaxInputs) {
 Network.prototype.Train = function(examples) {
     var outLayer = this.network[this.network.length - 1];
     var LearningRate = 0.3;
-    var epochs = 10000;
+    var epochs = 100000;
     var Threshold = 0.00001;
 
     for (let i = 0; i < epochs; i++) {
@@ -166,9 +166,10 @@ Functions.prototype.Mse = function(errors) {
 
 
 net = new Network();
+net.AddLayer(15, 20);
 net.AddLayer(10, 20);
 net.AddLayer(5, 20);
-net.AddLayer(3);
+net.AddLayer(4);
 var zero = [
     0, 1, 1, 0,
     1, 0, 0, 1,
@@ -203,16 +204,24 @@ var three = [
 
 var four = [1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0];
 
+var five = [0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1];
+
+var ten = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0];
+
 net.Train([
-    [zero, [0, 0, 0]],
+    [zero, [0, 0, 0, 0]],
 
-    [one, [0, 0, 1]],
+    [one, [0, 0, 0, 1]],
 
-    [two, [0, 1, 0]],
+    [two, [0, 0, 1, 0]],
 
-    [three, [0, 1, 1]],
+    [three, [0, 0, 1, 1]],
 
-    [four, [1, 0, 0]]
+    [four, [0, 1, 0, 0]],
+
+    [five, [0, 1, 0, 1]],
+
+    [ten, [1, 0, 1, 0]]
 
 ])
 
@@ -246,6 +255,24 @@ console.log("Digit recognized :", decimal, outputs)
 
 
 var outputs = net.Process(four)
+
+var binary = outputs.map(function(v) { return Math.round(v) }).join("")
+
+var decimal = parseInt(binary, 2)
+
+console.log("Digit recognized :", decimal, outputs)
+
+
+var outputs = net.Process(five)
+
+var binary = outputs.map(function(v) { return Math.round(v) }).join("")
+
+var decimal = parseInt(binary, 2)
+
+console.log("Digit recognized :", decimal, outputs)
+
+
+var outputs = net.Process(ten)
 
 var binary = outputs.map(function(v) { return Math.round(v) }).join("")
 
